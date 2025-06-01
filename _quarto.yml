@@ -1,0 +1,19 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "majh math"
+  description: "Bite-sized mahjong mathematics and strategy tips"
+  navbar:
+    logo: logo.png
+    title: "majh math"
+
+  page-footer:
+    center: "Lucy D'Agostino McGowan © 2025"
+
+format:
+  html:
+    theme: 
+      - styles.scss
+    toc: false
