@@ -4,91 +4,42 @@
     "href": "index.html",
     "title": "majh math",
     "section": "",
-    "text": "Discover the mathematics behind your favorite mahjong hands. Each tip is designed to give you quick insights that can improve your game strategy.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nCharleston Strategy: Pass Smart, Not Hard\n\n\n\n\n\n\n\n\n\n\n\n\n5 and 6: The Hot Tiles\n\n\n\n\n\n\n\n\n\n\n\n\n1 is The Loneliest Number\n\n\n\n\n\n\n\n\n\n\n\n\nHang on to your flowers\n\n\n\n\n\n\n\n\n\n\n\n\n2025 Card has 1,002 Unique Hands\n\n\n\n\n\nNo matching items"
+    "text": "Discover the mathematics behind your favorite mahjong hands. Each tip is designed to give you quick insights that can improve your game strategy.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nCharleston Strategy: Pass Smart, Not Hard\n\n\n\n\n\n\n\n\n\n\n\n\n5 and 6: The Hot Tiles\n\n\n\n\n\n\n\n\n\n\n\n\n1 is The Loneliest Number\n\n\n\n\n\n\n\n\n\n\n\n\nHang onto your flowers\n\n\n\n\n\n\n\n\n\n\n\n\n2025 Card has 1,002 Unique Hands\n\n\n\n\n\n\n\n\n\n\n\n\nThe Joker Jackpot: Why Math Makes Dealers Lucky\n\n\n\n\n\nNo matching items"
   },
   {
-    "objectID": "posts/2025-flowers/index.html",
-    "href": "posts/2025-flowers/index.html",
-    "title": "Hang on to your flowers",
+    "objectID": "posts/2025-jokers/index.html",
+    "href": "posts/2025-jokers/index.html",
+    "title": "The Joker Jackpot: Why Math Makes Dealers Lucky",
     "section": "",
-    "text": "Out of the 55 lines on your 2025 card there are 1,002 unique hands (curious about why? Check out our unique hands post). Each of these has 14 tiles:\n\n14 x 1,002 = 14,028 winning tiles\n\nWe can count how many times Flowers appear in these 14,028 winning tiles.\n\n1,329 / 14,028 = 9.5%\n\nFlowers are in high demand!\nLet’s compare them to the other tiles."
+    "text": "N &lt;- 50000\no &lt;- map_dfr(1:N, ~ jokers_sim())\nlibrary(ggplot2)\nlibrary(dplyr)\n\n\nAttaching package: 'dplyr'\n\n\nThe following objects are masked from 'package:stats':\n\n    filter, lag\n\n\nThe following objects are masked from 'package:base':\n\n    intersect, setdiff, setequal, union\n\nlibrary(scales)"
   },
   {
-    "objectID": "posts/2025-flowers/index.html#the-math",
-    "href": "posts/2025-flowers/index.html#the-math",
-    "title": "Hang on to your flowers",
-    "section": "",
-    "text": "Out of the 55 lines on your 2025 card there are 1,002 unique hands (curious about why? Check out our unique hands post). Each of these has 14 tiles:\n\n14 x 1,002 = 14,028 winning tiles\n\nWe can count how many times Flowers appear in these 14,028 winning tiles.\n\n1,329 / 14,028 = 9.5%\n\nFlowers are in high demand!\nLet’s compare them to the other tiles."
+    "objectID": "posts/2025-jokers/index.html#the-math",
+    "href": "posts/2025-jokers/index.html#the-math",
+    "title": "The Joker Jackpot: Why Math Makes Dealers Lucky",
+    "section": "The Math",
+    "text": "The Math\nThere are 8 jokers in the 152 tiles, which means every time you pick up a tile, you have a 5.3% shot at drawing a joker - and that percentage never changes regardless of what you’ve drawn before.\n\n8/152 = 5.3%\n\nBut here’s the question every player really wants answered: If I don’t have jokers now, what are my chances of getting them as I draw more tiles?\nImportant: This isn’t about being “due” for a joker, each individual draw is still 5.3%. This is about the cumulative effect of getting multiple chances.\nLet’s track your cumulative odds of finding at least one joker.\nAside: The dealer gets a small but real advantage – the fact that they start with 14 tiles in the opening deal versus 13 for everyone else bumps their “at least one joker” odds from 52% to 55%, a ~3 percentage point edge that persists throughout the game.\n\nrounds &lt;- 1:25\njoker_prob_per_tile &lt;- 8/152  \n\nprob_at_least_one_cumulative &lt;- 1 - (1 - joker_prob_per_tile)^rounds\n\ncumulative_data &lt;- data.frame(\n  round = rounds,\n  tiles_drawn = rounds,\n  probability = prob_at_least_one_cumulative,\n  percentage = paste0(round(prob_at_least_one_cumulative * 100, 1), \"%\")\n)\n\n\nggplot(cumulative_data, aes(x = round, y = probability)) +\n  geom_line(size = 2, color = \"#E8A8D3\", lineend = \"round\") +\n  geom_point(size = 4, color = \"#E8A8D3\") +\n  geom_text(data = cumulative_data[c(5, 10, 15, 20), ],\n            aes(label = percentage), \n            vjust = -1.5, size = 5, fontface = \"bold\", color = \"#34495E\") +\n  scale_y_continuous(labels = percent,\n                     limits = c(0, 1),\n                     breaks = seq(0, 1, 0.2),\n                     expand = expansion(mult = c(0, 0.1))) +\n  scale_x_continuous(breaks = seq(0, 25, 5)) +\n  theme_minimal() +\n  theme(\n    text = element_text(size = 20, color = \"#34495E\"),\n    axis.text = element_text(color = \"#34495E\"),\n    panel.grid.minor = element_blank(),\n    plot.background = element_rect(color = \"#0085FF\", linewidth = 5),\n    plot.margin = margin(20, 20, 20, 20),\n    plot.caption = element_text(size = 13, color = \"#E8A8D3\", hjust = 1)\n  ) +\n  labs(\n    x = \"Turns Played\",\n    y = \"Chance of Getting At Least One Joker\",\n    caption = \"Created by: Mahj Math\"\n  )\n\nWarning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.\nℹ Please use `linewidth` instead."
   },
   {
-    "objectID": "posts/2025-flowers/index.html#why-this-matters",
-    "href": "posts/2025-flowers/index.html#why-this-matters",
-    "title": "Hang on to your flowers",
-    "section": "Why This Matters",
-    "text": "Why This Matters\nWhen you’re deciding between potential hands during gameplay:\n✅ Keep your Flowers, especially during the Charleston\n❌ Avoid hands with Flower pairs if you don’t start with at least one"
+    "objectID": "posts/2025-jokers/index.html#why-it-matters",
+    "href": "posts/2025-jokers/index.html#why-it-matters",
+    "title": "The Joker Jackpot: Why Math Makes Dealers Lucky",
+    "section": "Why It Matters",
+    "text": "Why It Matters\nThe patience payoff is real. If you start with zero jokers, you hit 50% odds of finding at least one by around round 13.\nThis doesn’t mean you’re “due” for a joker by round 14. Each tile you draw is still independently 5.3% likely to be a joker. The cumulative probability just reflects getting multiple independent chances."
   },
   {
-    "objectID": "posts/2025-flowers/index.html#quick-strategy-tip",
-    "href": "posts/2025-flowers/index.html#quick-strategy-tip",
-    "title": "Hang on to your flowers",
-    "section": "💡 Quick Strategy Tip",
-    "text": "💡 Quick Strategy Tip\nIf you have multiple Flowers, consider which hands they support before discarding.\nNext time you’re dealt a flower, consider hanging on to it!"
+    "objectID": "posts/2025-jokers/index.html#simple-strategy",
+    "href": "posts/2025-jokers/index.html#simple-strategy",
+    "title": "The Joker Jackpot: Why Math Makes Dealers Lucky",
+    "section": "Simple Strategy",
+    "text": "Simple Strategy\nDon’t confuse cumulative odds with individual odds: Just because you have &gt;50% cumulative chase by round 14 doesn’t mean your next tile is more likely to be a joker. It’s still exactly 5.3%, same as always.\nEarly game (Rounds 1-5): If you started with zero jokers, resist the urge to pivot your entire strategy. The cumulative math shows you’re building toward better odds, but you’re not “due” for anything.\nMid game (Rounds 6-12): This is decision time. You’ve had many independent chances at jokers by now. If you still don’t have any, start considering joker-independent hands.\nLate game (Rounds 13+): Don’t chase jokers desperately thinking you “deserve” them after bad luck. Each remaining tile is still just 5.3% likely to be a joker, regardless of your previous draws.\nThe dealer advantage is small but real: Over 100 games as dealer, you’ll average about 3 extra jokers total compared to regular players. Don’t change your fundamental strategy, but acknowledge the slight edge."
   },
   {
-    "objectID": "posts/2025-unique-hands/index.html",
-    "href": "posts/2025-unique-hands/index.html",
-    "title": "2025 Card has 1,002 Unique Hands",
-    "section": "",
-    "text": "We’ve done the math (so you don’t have to!) – here’s the breakdown:\n\nThere are 55 lines on the 2025 card\nThere are 16 lines that have two ways to play, making 71 unique patterns\nWe’ve gone through each of these lines and calculated the possible unique combinations – there are 1,002!"
-  },
-  {
-    "objectID": "posts/2025-unique-hands/index.html#the-math",
-    "href": "posts/2025-unique-hands/index.html#the-math",
-    "title": "2025 Card has 1,002 Unique Hands",
-    "section": "",
-    "text": "We’ve done the math (so you don’t have to!) – here’s the breakdown:\n\nThere are 55 lines on the 2025 card\nThere are 16 lines that have two ways to play, making 71 unique patterns\nWe’ve gone through each of these lines and calculated the possible unique combinations – there are 1,002!"
-  },
-  {
-    "objectID": "posts/2025-unique-hands/index.html#why-this-matters",
-    "href": "posts/2025-unique-hands/index.html#why-this-matters",
-    "title": "2025 Card has 1,002 Unique Hands",
-    "section": "Why this matters",
-    "text": "Why this matters\nSome lines provide lots of ways to win, some only a few. Let’s break it down.\n\n\n\n\n\n\n\n\n\nThis can be helpful when you are trying to strategize which parts of the card to learn first. Be Careful how you interpret this, though! Some lines (like Quints!) may have lots of ways to win, but are hard to achieve, to win with a Quint you must have at least one joker!"
-  },
-  {
-    "objectID": "posts/2025-unique-hands/index.html#quick-strategy-tip",
-    "href": "posts/2025-unique-hands/index.html#quick-strategy-tip",
-    "title": "2025 Card has 1,002 Unique Hands",
-    "section": "💡 Quick Strategy tip",
-    "text": "💡 Quick Strategy tip\nNot all lines are created equal! As you can see from the chart above, some lines offer many more winning combinations than others.\nWith over 1,000 ways to win, the 2025 card offers incredible strategic depth. Understanding which tiles are most valuable can give you a significant edge in your games. Happy playing!"
-  },
-  {
-    "objectID": "posts/2025-charleston/index.html",
-    "href": "posts/2025-charleston/index.html",
-    "title": "Charleston Strategy: Pass Smart, Not Hard",
-    "section": "",
-    "text": "Out of 1,002 unique winning hands on the 2025 card (read more about that here), some tiles appear way more than others. Use this intel during Charleston:"
-  },
-  {
-    "objectID": "posts/2025-charleston/index.html#the-math-behind-the-pass",
-    "href": "posts/2025-charleston/index.html#the-math-behind-the-pass",
-    "title": "Charleston Strategy: Pass Smart, Not Hard",
-    "section": "",
-    "text": "Out of 1,002 unique winning hands on the 2025 card (read more about that here), some tiles appear way more than others. Use this intel during Charleston:"
-  },
-  {
-    "objectID": "posts/2025-charleston/index.html#quick-charleston-rules",
-    "href": "posts/2025-charleston/index.html#quick-charleston-rules",
-    "title": "Charleston Strategy: Pass Smart, Not Hard",
-    "section": "Quick Charleston Rules",
-    "text": "Quick Charleston Rules\n\n✅ KEEP: 3, 4, 5, 6, F\nThese appear in 9-10% of winning hands. Hold onto them unless you’re certain about your direction.\n\n\n🤔 MAYBE KEEP: 2, 7, 8, 9\nMid-demand tiles (6-7%). Good to keep if they fit your emerging pattern.\n\n\n❌ SAFE TO PASS: Winds\nWinds are not in as many hands this season. Pass these first when cleaning house."
-  },
-  {
-    "objectID": "posts/2025-charleston/index.html#pro-tip",
-    "href": "posts/2025-charleston/index.html#pro-tip",
-    "title": "Charleston Strategy: Pass Smart, Not Hard",
-    "section": "💡 Pro Tip",
-    "text": "💡 Pro Tip\nFlowers appear in more winning hands than any number except 5 and 6.\n\nThe 2025 Reality: While everyone fights over 5s and 6s, you might find more success building toward hands that use the mid-range numbers (2, 7, 8, 9) that others are passing."
+    "objectID": "posts/2025-jokers/index.html#the-key-insight",
+    "href": "posts/2025-jokers/index.html#the-key-insight",
+    "title": "The Joker Jackpot: Why Math Makes Dealers Lucky",
+    "section": "The Key Insight",
+    "text": "The Key Insight\nCumulative probability shows you’re getting multiple independent chances at jokers, not that you’re “due” for them. Each tile is still 5.3%, but having many chances improves your overall odds of success. Use this to set realistic expectations about when to pivot strategies, not to justify risky late-game chasing."
   },
   {
     "objectID": "posts/2025-fives-and-sixes/index.html",
@@ -117,6 +68,90 @@
     "title": "5 and 6: The Hot Tiles",
     "section": "💡 Quick Strategy Tip",
     "text": "💡 Quick Strategy Tip\nIf you have multiple 5s or 6s, consider which hands they support before discarding. These tiles are gold - treat them accordingly!\nNext time you’re dealt middle numbers, remember: you’re holding the most wanted tiles at the table."
+  },
+  {
+    "objectID": "posts/2025-charleston/index.html",
+    "href": "posts/2025-charleston/index.html",
+    "title": "Charleston Strategy: Pass Smart, Not Hard",
+    "section": "",
+    "text": "Out of 1,002 unique winning hands on the 2025 card (read more about that here), some tiles appear way more than others:"
+  },
+  {
+    "objectID": "posts/2025-charleston/index.html#the-math",
+    "href": "posts/2025-charleston/index.html#the-math",
+    "title": "Charleston Strategy: Pass Smart, Not Hard",
+    "section": "",
+    "text": "Out of 1,002 unique winning hands on the 2025 card (read more about that here), some tiles appear way more than others:"
+  },
+  {
+    "objectID": "posts/2025-charleston/index.html#why-this-matters",
+    "href": "posts/2025-charleston/index.html#why-this-matters",
+    "title": "Charleston Strategy: Pass Smart, Not Hard",
+    "section": "Why this matters",
+    "text": "Why this matters\nIf you don’t have clear strategy on hand, here are some helpful general rules you can follow during Charleston.\n\n✅ KEEP: 3, 5, 6, F\nThese appear in 9-10% of winning hands. Hold onto them unless you’re certain about your direction.\n\n\n🤔 MAYBE KEEP: 2, 4, 7, 8, 9\nMid-demand tiles (6-8%). Good to keep if they fit your emerging pattern.\n\n\n❌ SAFE TO PASS: Winds\nWinds are not in as many hands this season. Consider passing these first unless you have a clear path to victory with them."
+  },
+  {
+    "objectID": "posts/2025-charleston/index.html#pro-tip",
+    "href": "posts/2025-charleston/index.html#pro-tip",
+    "title": "Charleston Strategy: Pass Smart, Not Hard",
+    "section": "💡 Pro Tip",
+    "text": "💡 Pro Tip\nFlowers appear in more winning hands than any number except 5 and 6.\n\nThe 2025 Reality: Keep in mind others at the table may be thinking about this too, while everyone fights over 5s and 6s, you might find more success building toward hands that use the mid-range numbers (2, 4, 7, 8, 9) that others are passing."
+  },
+  {
+    "objectID": "posts/2025-unique-hands/index.html",
+    "href": "posts/2025-unique-hands/index.html",
+    "title": "2025 Card has 1,002 Unique Hands",
+    "section": "",
+    "text": "We’ve done the math (so you don’t have to!) – here’s the breakdown:\n\nThere are 55 lines on the 2025 card\nThere are 16 lines that have two ways to play, making 71 unique patterns\nWe’ve gone through each of these lines and calculated the possible unique combinations – there are 1,002!"
+  },
+  {
+    "objectID": "posts/2025-unique-hands/index.html#the-math",
+    "href": "posts/2025-unique-hands/index.html#the-math",
+    "title": "2025 Card has 1,002 Unique Hands",
+    "section": "",
+    "text": "We’ve done the math (so you don’t have to!) – here’s the breakdown:\n\nThere are 55 lines on the 2025 card\nThere are 16 lines that have two ways to play, making 71 unique patterns\nWe’ve gone through each of these lines and calculated the possible unique combinations – there are 1,002!"
+  },
+  {
+    "objectID": "posts/2025-unique-hands/index.html#why-this-matters",
+    "href": "posts/2025-unique-hands/index.html#why-this-matters",
+    "title": "2025 Card has 1,002 Unique Hands",
+    "section": "Why this matters",
+    "text": "Why this matters\nSome lines provide lots of ways to win, some only a few. Let’s break it down.\n\n\n\n\n\n\n\n\n\nThis can be helpful when you are trying to strategize which parts of the card to learn first. Be Careful how you interpret this, though! Some lines (like Quints!) may have lots of ways to win, but are hard to achieve, to win with a Quint you must have at least one joker!"
+  },
+  {
+    "objectID": "posts/2025-unique-hands/index.html#quick-strategy-tip",
+    "href": "posts/2025-unique-hands/index.html#quick-strategy-tip",
+    "title": "2025 Card has 1,002 Unique Hands",
+    "section": "💡 Quick Strategy tip",
+    "text": "💡 Quick Strategy tip\nNot all lines are created equal! As you can see from the chart above, some lines offer many more winning combinations than others.\n\nWith over 1,000 ways to win, the 2025 card offers incredible strategic depth. Understanding which tiles are most valuable can give you a significant edge in your games. Happy playing!"
+  },
+  {
+    "objectID": "posts/2025-flowers/index.html",
+    "href": "posts/2025-flowers/index.html",
+    "title": "Hang onto your flowers",
+    "section": "",
+    "text": "Out of the 55 lines on your 2025 card there are 1,002 unique hands (curious about why? Check out our unique hands post). Each of these has 14 tiles:\n\n14 x 1,002 = 14,028 winning tiles\n\nWe can count how many times Flowers appear in these 14,028 winning tiles.\n\n1,329 / 14,028 = 9.5%\n\nFlowers are in high demand!\nLet’s compare them to the other tiles."
+  },
+  {
+    "objectID": "posts/2025-flowers/index.html#the-math",
+    "href": "posts/2025-flowers/index.html#the-math",
+    "title": "Hang onto your flowers",
+    "section": "",
+    "text": "Out of the 55 lines on your 2025 card there are 1,002 unique hands (curious about why? Check out our unique hands post). Each of these has 14 tiles:\n\n14 x 1,002 = 14,028 winning tiles\n\nWe can count how many times Flowers appear in these 14,028 winning tiles.\n\n1,329 / 14,028 = 9.5%\n\nFlowers are in high demand!\nLet’s compare them to the other tiles."
+  },
+  {
+    "objectID": "posts/2025-flowers/index.html#why-this-matters",
+    "href": "posts/2025-flowers/index.html#why-this-matters",
+    "title": "Hang onto your flowers",
+    "section": "Why This Matters",
+    "text": "Why This Matters\nWhen you’re deciding between potential hands during gameplay:\n✅ Keep your Flowers, especially during the Charleston\n❌ Avoid hands with Flower pairs if you don’t start with at least one"
+  },
+  {
+    "objectID": "posts/2025-flowers/index.html#quick-strategy-tip",
+    "href": "posts/2025-flowers/index.html#quick-strategy-tip",
+    "title": "Hang onto your flowers",
+    "section": "💡 Quick Strategy Tip",
+    "text": "💡 Quick Strategy Tip\nIf you have multiple Flowers, consider which hands they support before discarding.\nNext time you’re dealt a flower, consider hanging onto it!"
   },
   {
     "objectID": "posts/2025-one-the-loneliest-number/index.html",
